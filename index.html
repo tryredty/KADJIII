@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pour [Prénom] ♥</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background-color: #fff5f7;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            color: #ff6b88;
+        }
+        .container {
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px #ffccd5;
+        }
+        .kawaii-box {
+            background-color: white;
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px auto;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(255, 105, 140, 0.2);
+        }
+        #happinessMessage {
+            font-size: 1.3em;
+            min-height: 60px;
+            margin: 20px;
+        }
+        button {
+            background-color: #ff8fab;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background-color: #ff6b88;
+            transform: scale(1.05);
+        }
+        .heart {
+            font-size: 50px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .heart:hover {
+            transform: scale(1.2);
+        }
+        #clickCount {
+            font-size: 1.5em;
+            margin: 10px;
+        }
+        #musicGif {
+            width: 200px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 10px auto;
+            display: block;
+            box-shadow: 0 4px 8px rgba(255, 105, 140, 0.3);
+            transition: transform 0.3s;
+        }
+        #musicGif:hover {
+            transform: scale(1.05);
+        }
+        #musicPlayer {
+            display: none;
+        }
+        #musicStatus {
+            font-size: 1.2em;
+            margin: 10px;
+            color: #ff6b88;
+        }
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        #playButton {
+            background-color: #ff8fab;
+            padding: 8px 20px;
+            border-radius: 20px;
+        }
+        
+        /* Styles pour le jeu Trouve mon cœur */
+        .game-container {
+            margin: 20px auto;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 80px);
+            gap: 15px;
+            justify-content: center;
+        }
+        .game-item {
+            width: 80px;
+            height: 80px;
+            background-color: #ffe4ec;
+            border-radius: 15px;
+            box-shadow: 0 0 5px #ff9cbf;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .game-item:hover {
+            transform: scale(1.1);
+        }
+        .game-message {
+            margin-top: 1rem;
+            font-size: 1.3em;
+            color: #d6336c;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌸 Pour KADJIII 🌸</h1>
+        
+        <!-- Machine à Bonheur -->
+        <div class="kawaii-box">
+            <h2>Machine à Petits Mots</h2>
+            <p>Clique pour un message surprise !</p>
+            <button onclick="generateHappiness()">Générer un petit mot</button>
+            <div id="happinessMessage">...</div>
+        </div>
+        
+        <!-- Musique Mignonne -->
+        <div class="kawaii-box">
+            <h2>Musique Mignonne ♫</h2>
+            <img id="musicGif" src="Heart Love GIF by WonderPals.gif" alt="GIF musical kawaii" onclick="toggleMusic()">
+            <p id="musicStatus">Clique sur le GIF ou le bouton pour jouer la musique !</p>
+            
+            <div class="music-controls">
+                <button id="playButton" onclick="toggleMusic()">▶️ Jouer</button>
+            </div>
+            
+            <audio id="musicPlayer" loop>
+                <source src="music.mp3" type="audio/mpeg">
+                Votre navigateur ne supporte pas l'élément audio.
+            </audio>
+        </div>
+        
+        <!-- Jeu Trouve mon cœur -->
+        <div class="kawaii-box game-container">
+            <h2>Trouve mon cœur secret 💘</h2>
+            <p>Un de ces cœurs contient une surprise... Trouve-le !</p>
+            <div class="game-grid" id="heartGrid"></div>
+            <div class="game-message" id="gameMessage">Tu as trouvé mon cœur ! Il est à toi pour 2 semaines 😔💘</div>
+        </div>
+    </div>
+    
+    <!-- Jeu du cœur cliquable -->
+    <div>
+        <div class="heart" onclick="clickHeart()">♥</div>
+        <div id="clickCount">Tu as cliqué 0 fois ♥</div>
+    </div>
+
+    <script>
+        let clickCount = 0;
+        let isPlaying = false;
+        const musicPlayer = document.getElementById("musicPlayer");
+        const playButton = document.getElementById("playButton");
+        const musicStatus = document.getElementById("musicStatus");
+        
+        function clickHeart() {
+            clickCount++;
+            document.getElementById("clickCount").innerText = `Tu as cliqué ${clickCount} fois ♥`;
+        }
+        
+        // Machine à Bonheur
+        const happyMessages = [
+            "Tu es la personne la plus rayonnante que je connaisse ✨",
+            "Merci d'exister, tu rends le monde meilleur 🌍",
+            "Aujourd'hui, tu vas vivre un moment magique ! 🎠",
+            "Ton sourire est mon énergie préférée 💖"
+        ];
+        
+        function generateHappiness() {
+            const randomMessage = happyMessages[Math.floor(Math.random() * happyMessages.length)];
+            document.getElementById("happinessMessage").innerHTML = randomMessage;
+        }
+        
+        // Musique Mignonne
+        function toggleMusic() {
+            if (musicPlayer.paused) {
+                musicPlayer.play();
+                isPlaying = true;
+                playButton.innerHTML = "⏸️ Pause";
+                musicStatus.innerHTML = "🎵 La musique joue... Profite bien !";
+            } else {
+                musicPlayer.pause();
+                isPlaying = false;
+                playButton.innerHTML = "▶️ Jouer";
+                musicStatus.innerHTML = "Musique en pause";
+            }
+        }
+        
+        // Mise à jour initiale du bouton
+        musicPlayer.addEventListener('play', function() {
+            playButton.innerHTML = "⏸️ Pause";
+            musicStatus.innerHTML = "🎵 La musique joue... Profite bien !";
+        });
+        
+        musicPlayer.addEventListener('pause', function() {
+            playButton.innerHTML = "▶️ Jouer";
+            musicStatus.innerHTML = "Musique en pause";
+        });
+        
+        // Jeu Trouve mon cœur
+        const heartGrid = document.getElementById("heartGrid");
+        const gameMessage = document.getElementById("gameMessage");
+        const totalItems = 12;
+        const heartIndex = Math.floor(Math.random() * totalItems);
+
+        for (let i = 0; i < totalItems; i++) {
+            const el = document.createElement('div');
+            el.classList.add('game-item');
+            el.innerHTML = '🌸';
+            el.onclick = () => {
+                if (i === heartIndex) {
+                    el.innerHTML = '💖';
+                    gameMessage.style.display = 'block';
+                } else {
+                    el.innerHTML = '💔';
+                    el.style.pointerEvents = 'none';
+                }
+            };
+            heartGrid.appendChild(el);
+        }
+    </script>
+</body>
+</html>
